@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Node js Google Recaptcha v3 &amp; Honey Pot Example Testing</title>
+</head>
+<body>
+  <div class="container"><br />
+    <h1>Test Form</h1><br />
+      <form id="AcousticForm" method="POST" action="/captcha">
+
+      <label for="firstname">First Name:</label>
+      <input type="text" name="First Name"> <br />
+
+      <label for="email">Email:</label>
+      <input type="text" name="Email" id="email"><br />
+
+      <label for="comments">Comments:</label>
+      <input type="text" name="Comments from Contact" id="comments"><br />
+      
+      <button type="submit">Send</button>
+
+      <!-- hidden fields -->
+      <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
+      <input type="hidden" name="action" value="validate_captcha">
+      <input type="hidden" name="submittingURL" value="https://www.pages05.net/whereoware/test-webflow-cg/test-webform/">
+      <input type="hidden" name="sp_exp" value="yes">
+      <input type="hidden" name="hp_ex" value="">
+    </form>
+
+    <div id="result"></div>
+    
+  </div>
+  <script src="https://www.google.com/recaptcha/api.js?render=6LcAv7AfAAAAAM3X8df7DMcpEps7zpfjxuCGSaLX"></script>
+  <script type="text/javascript">
+    grecaptcha.ready(function () {
+      // request for recaptcha token
+      // response is promise with passed token
+      grecaptcha.execute('6LcAv7AfAAAAAM3X8df7DMcpEps7zpfjxuCGSaLX', {
+        action: 'validate_captcha'
+      })
+      .then(function (token) {
+        // add token value to form
+        document.getElementById('g-recaptcha-response').value = token;
+      });
+    });
+  </script>
+</body>
+</html>

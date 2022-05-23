@@ -1,29 +1,22 @@
 # README #
 
-This README would normally document whatever steps are necessary to get your application up and running.
+Welcome to the Whereoware Webflow Form Processing application! This node app was created using Express, Nodemon, and Axios to allow form submissions coming from the Whereoware Webflow Website to be processed and allowed if certain criteria are met.
 
 ### What is this repository for? ###
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+* The need for this app came from Alyson Hunter who was "getting inundated by spam" form submissions on the website. We've not identified how bots are getting to the site but this app is setup to prevent them from submitting forms.
+* Version 0.1.0
 
 ### How do I get set up? ###
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
-
-### Contribution guidelines ###
-
-* Writing tests
-* Code review
-* Other guidelines
+*Requirements*: Node and Git  
+*Install*:  
+`npm install`
+*Dependencies*: Axios and Express 
+*Dev Dependencies*: Nodemon 
+*Run*:  
+`npm start`
 
 ### Who do I talk to? ###
 
-* Repo owner or admin
-* Other community or team contact
+* Repo owner: Chris Grouge, Lead Digital Marketer, Whereoware

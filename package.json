@@ -1,0 +1,20 @@
+{
+  "name": "webflow-form-processing",
+  "version": "0.1.0",
+  "description": "The Whereoware Webflow website is receiving a large amount of spam form submissions. Google Recaptcha was implemented on the Webflow platform but form submissions are being sent to Acoustic. So, Google Recaptcha isn't validating score before submitting. This application was built to use the honey pot hidden field and to review the score to stop bot form submissions.",
+  "main": "app.js",
+  "scripts": {
+    "// note": "// this lets me run npm start which runs nodemon app.js",
+    "start": "nodemon app"
+  },
+  "keywords": [],
+  "author": "Chris Grouge, Lead Digital Marketer, Whereoware",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.27.2",
+    "express": "^4.18.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.16"
+  }
+}
