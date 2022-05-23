@@ -9,13 +9,13 @@ Welcome to the Whereoware Webflow Form Processing application! This node app was
 
 ### How do I get set up? ###
 
-*Requirements*: Node and Git  
-*Install*:  
-`npm install`
-*Dependencies*: Axios and Express 
-*Dev Dependencies*: Nodemon 
-*Run*:  
-`npm start`
+**Requirements**: Node and Git    
+**Install**:  
+`npm install`   
+**Dependencies**: Axios and Express   
+**Dev Dependencies**: Nodemon   
+**Run**:  
+`npm start`   
 
 ### Who do I talk to? ###
 
