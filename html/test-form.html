@@ -11,6 +11,11 @@
     <h1>Test Form</h1><br />
       <form id="AcousticForm" method="POST" action="/captcha">
 
+      <!-- honey pot form field -->
+      <div><style type="text/css">#dpW0wHp { opacity: 0; position: absolute; top: 0; left: 0; height: 0; width: 0; z-index: -1; }</style>
+      <input type="text" id="dpW0wHp" name="CustId" data-name="CustId" placeholder="CUSTOMER ID" class="contact-text-f1eld w-1nput" tabindex="-1" autocomplete="off"></div>
+      <!-- end honey pot form field -->
+      
       <label for="firstname">First Name:</label>
       <input type="text" name="First Name"> <br />
 
@@ -27,7 +32,6 @@
       <input type="hidden" name="action" value="validate_captcha">
       <input type="hidden" name="submittingURL" value="https://www.pages05.net/whereoware/test-webflow-cg/test-webform/">
       <input type="hidden" name="sp_exp" value="yes">
-      <input type="hidden" name="hp_ex" value="">
     </form>
 
     <div id="result"></div>
