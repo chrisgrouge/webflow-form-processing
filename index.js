@@ -6,8 +6,10 @@ const config = require('config');
 
 exports.handler = async (event, context, callback) => {
 
+  // 
   const formData = qs.parse(event.body);
   const formDataForQuery = formData;
+  // we redefine this variable later with the final submitting url to Acoustic. For now, we just need the site url.
   let submittingURL = formData.submittingURL + "?";
   
   
