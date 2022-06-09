@@ -55,13 +55,13 @@ Now, let's look at the three most important pieces of this project and break the
 
 ### 1. config
 
-The config file is used to store sensetive information, much like the Google Recaptcha secret. This makes it easy to store as a variable to use through out the application, not just in one file. Since we only have one file using it, it's not super helpful, but we may introduce more files in the future.
+The config file is used to store sensetive information, much like the Google Recaptcha secret. This makes it easy to store as a variable to use through out the application, not just in one file. Since we only have one file using it, it's not super helpful, but we may introduce more files in the future.<br>
+*Note: the config file was setup for testing purposes but these secrets likey should be added as environment variables on the lambda function.*
 
 ### 2. html
 
-File *honeypot-example.html* is just an example of what the honeypot field will be when it's placed on the form.
-
-File *test-form.html* can be used for local testing. You'll have to manually set the form action url to a dev link so you can trigger a dev lambda function.
+-   *honeypot-example.html* is just an example of what the honeypot field will be when it's placed on the form.
+-   *test-form.html* can be used for local testing. You'll have to manually set the form action url to a dev link so you can trigger a dev lambda function.
 
 ### 3. index.js
 
