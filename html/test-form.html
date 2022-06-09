@@ -7,49 +7,45 @@
   <title>Node js Google Recaptcha v3 &amp; Honey Pot Example Testing</title>
 </head>
 <body>
-  <div class="container"><br />
-    <h1>Test Form</h1><br />
-      <form id="AcousticForm" method="POST" action="/captcha">
+  <form method="post" class="AcousticForm form flex-column flex-align-start recaptcha-check-form" id="22-Optimizely-Upgrade" name="22-Optimizely-Upgrade" data-name="22-Optimizely-Upgrade" aria-label="22-Optimizely-Upgrade" action="https://ev20ry8zej.execute-api.us-east-1.amazonaws.com/default/dev" pageId="18553420" siteId="803732" parentPageId="18553418">
 
-      <!-- honey pot form field -->
-      <div><style type="text/css">#dpW0wHp { opacity: 0; position: absolute; top: 0; left: 0; height: 0; width: 0; z-index: -1; }</style>
-      <input type="text" id="dpW0wHp" name="CustId" data-name="CustId" placeholder="CUSTOMER ID" class="contact-text-f1eld w-1nput" tabindex="-1" autocomplete="off"></div>
-      <!-- end honey pot form field -->
-      
-      <label for="firstname">First Name:</label>
-      <input type="text" name="First Name"> <br />
-
-      <label for="email">Email:</label>
-      <input type="text" name="Email" id="email"><br />
-
-      <label for="comments">Comments:</label>
-      <input type="text" name="Comments from Contact" id="comments"><br />
-      
-      <button type="submit">Send</button>
-
-      <!-- hidden fields -->
-      <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
-      <input type="hidden" name="action" value="validate_captcha">
-      <input type="hidden" name="submittingURL" value="https://www.pages05.net/whereoware/test-webflow-cg/test-webform/">
-      <input type="hidden" name="sp_exp" value="yes">
-    </form>
-
-    <div id="result"></div>
+    <div><style type="text/css">#dpW0wHp { opacity: 0; position: absolute; top: 0; left: 0; height: 0; width: 0; z-index: -1; }</style>
+    <input type="text" id="dpW0wHp" name="CustId" data-name="CustId" placeholder="CUSTOMER ID" class="contact-text-f1eld w-1nput" tabindex="-1" autocomplete="off"></div>
     
-  </div>
-  <script src="https://www.google.com/recaptcha/api.js?render=6LcAv7AfAAAAAM3X8df7DMcpEps7zpfjxuCGSaLX"></script>
-  <script type="text/javascript">
-    grecaptcha.ready(function () {
-      // request for recaptcha token
-      // response is promise with passed token
-      grecaptcha.execute('6LcAv7AfAAAAAM3X8df7DMcpEps7zpfjxuCGSaLX', {
-        action: 'validate_captcha'
-      })
-      .then(function (token) {
-        // add token value to form
-        document.getElementById('g-recaptcha-response').value = token;
-      });
-    });
-  </script>
+    <div class="width-full margin-bottom-16">
+      <input type="text" id="jlrerwf" name="Email" data-name="Email" placeholder="BUSINESS EMAIL*" class="contact-text-field w-input" required="">
+      <div id="error-jlrerwf" class="error-text">
+        <div class="text-small">Please enter a valid Email Address</div>
+      </div>
+    </div>
+    
+    <div class="width-full margin-bottom-16">
+      <input type="text" id="h76qa21" name="First Name" data-name="First Name" placeholder="First Name*" class="contact-text-field w-input" maxlength="256" required="required">
+      <div id="error-h76qa21" class="error-text">
+        <div class="text-small">Please enter your First Name</div>
+      </div>
+    </div>
+  
+    <div class="width-full margin-bottom-16">
+      <div class="additional-form-area feedback-field">
+        <textarea name="Comments from Contact" data-name="Comments from Contact" id="nggz4yt" placeholder="Do you have any feedback for us?" class="contact-text-field w-input" maxlength="4000" style="background-color: rgb(235, 237, 238);"></textarea>
+        <div id="error-nggz4yt" class="error-text">
+          <div class="text-small"></div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="policy-text top-20">By submitting this form, you agree to receive our future communications. Visit our <a href="/lp/email-preferences" class="policy-link-2">Preference Center</a> to make changes and our <a href="/privacy-policy" class="policy-link-2">Privacy Policy</a> to learn how we use your data.</div> <div class="margin-left-auto"><div class="contact-submit-wrap"><button class="g-recaptcha contact-submit-button-2 margin-bottom-0 w-button recaptcha-send-btn" id="submit-1024" data-sitekey="6LdtEAkeAAAAAOioARNXsjsYyY2E4hCK9B0GrUCj" data-callback="recaptchaSubmit" data-action="submit">talk to us</button><div class="contact-submit-arrow-2 w-embed" style="transform: translate3d(0px, 0px, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(-45deg) skew(0deg, 0deg); transform-style: preserve-3d;"><svg width="19" height="16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="m11.096 0-1.069 1.105 6.064 6.189L0 7.265.062 8.82l16.029.029-5.91 6.058L11.261 16 19 8.071 11.096 0Z" fill="currentColor"></path></svg><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="AcousticFormLoading" style="margin: auto; background: rgba(0, 0, 0, 0) none repeat scroll 0% 0%; display: none; shape-rendering: auto;" width="24px" height="24px" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid"><circle cx="50" cy="50" fill="none" stroke="#dc137d" stroke-width="8" r="38" stroke-dasharray="179.0707812546182 61.690260418206066"><animateTransform attributeName="transform" type="rotate" repeatCount="indefinite" dur="1s" values="0 50 50;360 50 50" keyTimes="0;1"></animateTransform></circle></svg></div></div></div>
+    
+    <input type="hidden" name="Advertisement Type" value="22-Opt-Net-5" data-name="Advertisement Type">
+    
+    
+    <input type="hidden" name="Lead captured via" value="Website" data-name="Lead captured via">
+    
+    
+        <!-- DO NOT REMOVE HIDDEN FIELD sp_exp -->
+          <input type="hidden" name="sp_exp" value="yes">
+          <input type="hidden" name="submittingURL" value="https://www.pages05.net/whereoware/test-webflow-cg/test-webform/">
+        </form>
 </body>
 </html>
