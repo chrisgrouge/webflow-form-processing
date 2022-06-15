@@ -55,8 +55,8 @@ Now, let's look at the three most important pieces of this project and break the
 
 ### 1. config
 
-The config file is used to store sensetive information, much like the Google Recaptcha secret. This makes it easy to store as a variable to use through out the application, not just in one file. Since we only have one file using it, it's not super helpful, but we may introduce more files in the future.<br>
-*Note: the config file was setup for testing purposes but these secrets likey should be added as environment variables on the lambda function.*
+The config file is used to store sensetive information, like the Google Recaptcha secret. This makes it easy to store as a variable to use through out the application, not just in one file. Since we only have one file using it, it's not super helpful, but we may introduce more files in the future.<br>
+*Note: the config file was setup for testing purposes but these secrets have now been added as environment variables on the lambda function. Leaving config file in place if needed for future testing*
 
 ### 2. html
 

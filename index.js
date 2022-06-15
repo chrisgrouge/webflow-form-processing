@@ -15,9 +15,11 @@ exports.handler = async (event, context, callback) => {
   const gRecaptchaResponse = formData['g-recaptcha-response'];
   const hp = formData['CustId'];
   // prod secret
-  const CAPTCHA_SECRET = config.get('CAPTCHA_SECRET');
-  // testing secret
+  const CAPTCHA_SECRET = process.env.CAPTCHA_SECRET;
+  // testing secret using config
   // const CAPTCHA_SECRET = config.get('TEST_CAPTCHA_SECRET');
+  // testing secret using aws environment variable
+  // const CAPTCHA_SECRET = process.env.TEST_CAPTCHA_SECRET;
   const CAPTCHA_URL = `https://www.google.com/recaptcha/api/siteverify?secret=${CAPTCHA_SECRET}&response=${gRecaptchaResponse}`;
   let redirectURL = "";
 
