@@ -1,4 +1,5 @@
 {
   "TEST_CAPTCHA_SECRET": "See AWS Variables",
-  "CAPTCHA_SECRET": "See AWS Variables"
+  "CAPTCHA_SECRET": "See AWS Variables",
+  "SUPPRESS_NO_CONFIG_WARNING": "y"
 }

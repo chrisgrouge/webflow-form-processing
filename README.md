@@ -57,6 +57,7 @@ Now, let's look at the three most important pieces of this project and break the
 
 The config file is used to store sensetive information, like the Google Recaptcha secret. This makes it easy to store as a variable to use through out the application, not just in one file. Since we only have one file using it, it's not super helpful, but we may introduce more files in the future.<br>
 *Note: the config file was setup for testing purposes but these secrets have now been added as environment variables on the lambda function. Leaving config file in place if needed for future testing*
+*Note: added "SUPPRESS_NO_CONFIG_WARNING" to the config and aws environment variables to stop console warning when running lambda function that no config file was found*
 
 ### 2. html
 
