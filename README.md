@@ -21,7 +21,7 @@ We've not identified how bots are getting to the site but this app is setup to p
 1.  **A hidden honey pot text field**
     1.  The idea behind this honey pot field is to catch bots attempting to submit forms and stopping them before anything else can take place. The honey pot field is a non-visible text field hidden in the form. A human submitting this form won't see the field and can submit without issues. Bots submitting the form can see the HTML of the input and will attempt to submit a value. This application will identify when a value has been submitted for this honey pot field and will block the submission.
 2.  **Google Recaptcha V3**
-    2.  If a bot is smart enough to ignore the hidden honey pot field, they must also pass the google recaptcha validation before submissions will be accepted. We're allowing recaptca scores of 0.8 and higher to continue through the form. Anything below 0.8 will be blocked.
+    2.  If a bot is smart enough to ignore the hidden honey pot field, they must also pass the google recaptcha validation before submissions will be accepted. We're allowing recaptca scores of 0.7 and higher to continue through the form. Anything below 0.7 will be blocked.
 <br>
 
 
@@ -78,7 +78,7 @@ Here is where all the magic happens. I'm going to break down the file into secti
     -  Ok, so, the honey pot field was blank. Still could be a bot smarter than the average bot. Let's make sure Google Recaptcha ran and returned a token for Google to grade them.
 1.  **Your fate is in Google's hands now**
     -  We're using the node pacakge, Axios, to perform a post request to the Google Recaptcha site veritication url. We need to pass a few parameters such as the secret and the toekn we received on the front-end. Google will score the interaction and return it back to us. We can then use that score to determine if we should allow the submission to proceed to the next step.
-    -  Normally, a human submitting the form will receive a score of 0.9. To be generous, we're allowing anyone with a score of 0.8 or above to proceed. 0.8 was just a starting point and may be adjusted in the future.
+    -  Normally, a human submitting the form will receive a score of 0.9. To be generous, we're allowing anyone with a score of 0.7 or above to proceed. 0.7 was just a starting point and may be adjusted in the future.
 1.  **You may now board the plane**
     -  You didn't submit a value with the honey pot, you received a token from grecaptcha, and Google determined you to be a safe flyer. We trust you're safe and can now proceed to your final destination. We'll build the submitting url for you so all the form data you sent to us can make its way to Acoustic.
     -  This submitting url is composed of the site url and a long query string of each field name from the form and the accompanied value that was paired with it. We're including some fields which are not Acoustic fields and that's ok. Those will just be ignored when submitting.

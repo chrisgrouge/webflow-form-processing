@@ -84,18 +84,18 @@ exports.handler = async (event, context, callback) => {
       });
       console.log("----- Begin recaptcha scoring")
       console.log(res.data);
-      // ! here is where I'm deciding when to submit to Acoustic. Right now submissions go to Acoustic if score is greater than or equal to 0.8
-      if(res.data.success === true && res.data.score >= 0.8) {
+      // ! here is where I'm deciding when to submit to Acoustic. Right now submissions go to Acoustic if score is greater than or equal to 0.7
+      if(res.data.success === true && res.data.score >= 0.7) {
         
         // ! when testing uncomment this section and comment out the submitToAcoustic function. The below will return the submission details in the browser for you to review
-        console.log("----- PASSESD STEP 3. Recaptcha response was submitted successfully and score at or above 0.8");
+        console.log("----- PASSESD STEP 3. Recaptcha response was submitted successfully and score at or above 0.7");
         return {
           statusCode: res.status,
           body: res
         }
       }
       else {
-        throw new Error("Scoring the recaptcha response failed. It either returned false or the score was below 0.8.");
+        throw new Error("Scoring the recaptcha response failed. It either returned false or the score was below 0.7.");
       }
     }
     catch(error) {
