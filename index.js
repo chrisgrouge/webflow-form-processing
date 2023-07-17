@@ -21,7 +21,9 @@ exports.handler = async (event, context, callback) => {
   // testing secret using aws environment variable
   // const CAPTCHA_SECRET = process.env.TEST_CAPTCHA_SECRET;
   const CAPTCHA_URL = `https://www.google.com/recaptcha/api/siteverify?secret=${CAPTCHA_SECRET}&response=${gRecaptchaResponse}`;
-  let redirectURL = "";
+  // defaulting to 404 page. This will be updated if needed.
+  let redirectURL = "https://www.whereoware.com/404";
+  const ERROR_URL = "https://www.whereoware.com/error";
 
   console.log("----- FORM SUBMISSION");
   console.log(formData);
@@ -55,7 +57,9 @@ exports.handler = async (event, context, callback) => {
   const confirmGoogleRecaptchaResponse = () => {
     if (gRecaptchaResponse === undefined || gRecaptchaResponse === '' || gRecaptchaResponse === null) {
       let errorMsg = "----- Google Recaptcha Response NOT included in the submission. Do not allow."
-      console.log(errorMsg)
+      console.log(errorMsg);
+      redirectURL = ERROR_URL;
+      console.log("Will redirect to: ", redirectURL);
       throw new Error(errorMsg);
     } else {
       let passMsg = "----- PASSED STEP 2. Google Recaptcha Response found."
@@ -95,6 +99,8 @@ exports.handler = async (event, context, callback) => {
         }
       }
       else {
+        redirectURL = ERROR_URL;
+        console.log("Will redirect to: ", redirectURL);
         throw new Error("Scoring the recaptcha response failed. It either returned false or the score was below 0.7.");
       }
     }
@@ -137,7 +143,7 @@ exports.handler = async (event, context, callback) => {
         console.log("----- Submission to Acoustic successful. Compiling redirect url for final redirect.")
         // this value is navigating down the JSON tree of data Acoustic provides in the response to get the url you redirect to after a successful submission. We can redirect the page here
         redirectURL = res.request._redirectable._currentUrl;
-        console.log(redirectURL);
+        console.log("Will redirect to: ", redirectURL);
       }).catch((error) => {
         console.error(error);
       });
@@ -188,7 +194,7 @@ exports.handler = async (event, context, callback) => {
     return {
       statusCode: 301,
       headers: {
-          Location: 'https://www.whereoware.com/404'
+          Location: redirectURL
       }
     }
   }    
