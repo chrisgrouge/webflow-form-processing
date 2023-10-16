@@ -73,148 +73,189 @@ window.onload = (event) => {
   
 </script>
 
+<!-- Forms and Recaptcha -->
 <script>
-  function validateEmail(contactemail) {
-    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(String(contactemail).toLowerCase());
+function validateEmail(contactemail) {
+  var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return re.test(String(contactemail).toLowerCase());
+}
+
+$('#footer-email').keyup(function(){
+  let isValid = $(this).is(':valid') && validateEmail($(this).val());
+  if (isValid) {
+    $('#footer-email').addClass("success");
+    $('#footer-email').removeClass("error");
+    $('#error-footer-email').hide();
+  } else {
+    $('#footer-email').removeClass("success");
+    $('#footer-email').addClass("error");
+    $('#error-footer-email').show();
   }
-  $('#footer-email').keyup(function(){
-    let isValid = $(this).is(':valid') && validateEmail($(this).val());
-    if (isValid) {
-      $('#footer-email').addClass("success");
-      $('#footer-email').removeClass("error");
-      $('#error-footer-email').hide();
+});
+
+// removing the required attribute from checkboxes when at least one is selected
+$(function(){
+  var checkbox = $(":checkbox[required]");
+  var parentID = checkbox.parent().attr("id");
+  checkbox.change(function(){
+    if(checkbox.is(":checked")) {
+      checkbox.removeAttr("required");
+      checkbox.parent().next().hide();
     } else {
-      $('#footer-email').removeClass("success");
-      $('#footer-email').addClass("error");
-      $('#error-footer-email').show();
+      checkbox.attr("required","required");
+      checkbox.parent().next().show();
     }
-  })
+  });
+});
 
-  //reCAPTCHA
-  function recaptchaSubmit(e) {
-    e.preventDefault();
-    const $this = $(this),
-          form = $this.closest('form'),
-          recaptcha = form.find("[name='g-recaptcha-response']");
+function acousticFormLoadingState(isLoading, form) {
+ if (isLoading) {
+   form.find(".contact-submit-arrow-2 svg:first").hide();
+   form.find(".AcousticFormLoading").css("display", "block");
+ }
+ else {
+   form.find(".contact-submit-arrow-2 svg:first").show();
+   form.find(".AcousticFormLoading").css("display", "none");
+ }  
+}
+
+// Acoustic form validation
+const acousticFormValidation = {
+  form: null,
+  fields: 0,
+  validFields: 0,
+  _handleInvalidInput(id, name) {
+    $(this).addClass("error").removeClass("success");
+    $("#error-" + id).show();
+    console.error(`Invalid input value: ${name}`);
+  },
+  _handleUncheckedInput(name) {
+    var parentID = form.find("input[name='" + name + "']").parent().attr("id");
+    $(this).addClass("error").removeClass("success");
+    $("#error-" + parentID).show();
+    console.error(`Invalid checkbox: ${name}`);
+  },
+  _handleValidInput(id) {
+    validFields++;
+    $(this).removeClass("error").addClass("success");
+    $("#error-" + id).hide();
+  },
+  _validateField(field, checkboxCheckedLength) {
+    const value = $(field).val(),
+          id = $(field).attr("id"),
+          name = $(field).attr("name"),
+          type = $(field).attr("type"),
+          isValidEmail = value != "" && validateEmail(value);
     
-    // initiate loading animation
-    form.find(".contact-submit-arrow-2 svg:first").hide();
-    form.find(".AcousticFormLoading").css("display", "block");
+    fields++;
+    
+    switch (true) {
+      case name == "Email" && !isValidEmail:
+        this._handleInvalidInput(id, name);
+        break;
+      case (type == "checkbox" && checkboxCheckedLength == 0) || (type == "radio" && checkboxCheckedLength == 0):
+        this._handleUncheckedInput(name);
+        break;
+      case $(this).is("select") && $("#" + id + " option:selected").val() == "":
+        this._handleInvalidInput(id, name);
+        break;
+      case value == "":
+        this._handleInvalidInput(id, name);
+        break;
+      default:
+        this._handleValidInput(id);
+    }
+  },
+  submitForm(event) {
+    event.preventDefault();
+    form = $(event.target);
+    fields = this.fields;
+    validFields = this.validFields;
 
-    // execute reCAPTCHA
+    // for each required input, check if it's valid and increment the validFields counter
+    form.find("input:required, textarea:required, select:required").each((index, element) => {
+      let countCheckboxes = form.find("input[type='checkbox']:checked").length;
+      
+      // adding a work around for the unsubscribe form becuase it technically has two radios with different names but are supposed to act like one fieldset of radios
+      if(form.attr("id") == "unsubscribe") {
+        const countUnsubRadios = form.find("input[type='radio']:checked").length;
+        if(countUnsubRadios > 0) {
+          countCheckboxes++;
+        }
+      }
+      
+      this._validateField($(element), countCheckboxes);
+    });
+
+    // console.log("Total required inputs: " + fields, "  |  Total valid inputs: " + validFields);
+    
+    // if all required inputs are valid, submit the form
+    if(fields === validFields) {
+      event.target.submit();
+      return
+    }
+
+    // default to stop loading animation becuase not all required inputs are valid and the form will not submit
+    acousticFormLoadingState(false, form);
+  }
+};
+
+const recaptchaSubmit = {
+  button: null,
+  form: null,
+  recaptcha: null,
+  _executeRecaptcha(resolve, reject) {
     try {
-      grecaptcha.ready(function() {
+      grecaptcha.ready(() => {
         grecaptcha
           .execute('6LdtEAkeAAAAAOioARNXsjsYyY2E4hCK9B0GrUCj', {action: 'submit'})
-          .then(function(token) {
-            if(recaptcha.length) {
+          .then((token) => {
+            if (recaptcha.length) {
               recaptcha.val(token);
             } else {
               form.append('<input type="hidden" name="g-recaptcha-response" value="' + token + '">');
             }
-            $this.closest('.recaptcha-check-form').submit();
+            resolve();
           })
-          .catch(function(error) {
+          .catch((error) => {
             console.error('Error: grecaptcha failed to execute. ' + error);
+            // stop loading animation and reject promise
+            acousticFormLoadingState(false, form);
+            reject();
           });
       });
     } catch (error) {
       console.error('Error: grecaptcha is not ready. ' + error);
+      // stop loading animation and reject promise
+      acousticFormLoadingState(false, form);
+      reject();
     }
-  }
-  $(document).ready(function() {
-    $(".recaptcha-send-btn").click(recaptchaSubmit);
-  });
-
-  // removing the required attribute from checkboxes when at least one is selected
-  $(function(){
-    var e = $(":checkbox[required]");
-    var parentID = e.parent().attr("id");
-    e.change(function(){
-      if(e.is(":checked")) {
-        e.removeAttr("required");
-        e.parent().next().hide();
-      } else {
-        e.attr("required","required");
-        e.parent().next().show();
-      }
-    });
-  });
-
-  // Acoustic form validation
-  $(".AcousticForm, #preference-center, #unsubscribe").on("submit", function(event) {
+  },
+  submitForm(event) {
     event.preventDefault();
+    button = $(event.target);
+    form = button.closest('form');
+    recaptcha = form.find("[name='g-recaptcha-response']");
+    
+    // initiate loading animation
+    acousticFormLoadingState(true, form);
 
-    console.log("STARTING ACOUSTIC FORM VALIDATION");
-
-    const acousticFormValidation = {
-      form: null,
-      fields: 0,
-      validFields: 0,
-
-      submitform(event) {
-        event.preventDefault();
-        console.log("STARTING ACOUSTIC FORM VALIDATION");
-        this.fields = 0;
-        this.validFields = 0;
-      }
-    }
-
-    let form = $(this),
-        fields = 0,
-        validFields = 0;
-    form.find("input:required, textarea:required, select:required").each(function() {
-      var value = $(this).val(),
-          id = $(this).attr("id"),
-          name = $(this).attr("name"),
-          type = $(this).attr("type"),
-          ph = $(this).attr("placeholder"),
-          isValidEmail = value != "" && validateEmail(value),
-          error = $("#error-" + id).children("div.text-small"),
-          countchecked = form.find("input[name='" + name + "']:checked").length;
-      fields++;
-      // adding a work around for the unsubscribe form becuase it technically has two radios with different names but are supposed to act like one fieldset of radios
-      if(form.attr("id") == "unsubscribe") {
-        var countUnsubRadios = form.find("input[type='radio']:checked").length;
-        if(countUnsubRadios > 0) {
-          countchecked = 1;
-        }
-      }
-      // validate email field is valid
-      if(name == "Email" && !isValidEmail) {
-        $(this).addClass("error").removeClass("success");
-        $("#error-" + id).show();
-      }
-      // if checkboxes and radios have a selected option
-      else if((type == "checkbox" && countchecked == 0) || (type == "radio" && countchecked == 0)) {
-        var parentID = form.find("input[name='" + name + "']").parent().attr("id");
-        $(this).addClass("error").removeClass("success");
-        $("#error-" + parentID).show();
-      }
-      // if drop down has changed it's value from the blank placeholder option 1
-      else if($(this).is("select") && $("#" + id + " option:selected").val() == "") {
-        $(this).addClass("error").removeClass("success");
-        $("#error-" + id).show();
-      }
-      // find any blank input values
-      else if(value == "") {
-        $(this).addClass("error").removeClass("success");
-        $("#error-" + id).show();
-      }
-      // if all tests pass, increase the number of valid fields, assign a success class, and hide the error message
-      else {
-        validFields++;
-        $(this).removeClass("error").addClass("success");
-        $("#error-" + id).hide();
-      }
+    // execute recaptcha and submit form if successful
+    new Promise((resolve, reject) => {
+      this._executeRecaptcha(resolve, reject);
+    }).then(() => {
+      form.submit();
     });
-    // you can only submit the form if the number of required fields is equal to the number of required valid fields
-    if(fields == validFields) {
-      console.log("ENDING ACOUSTIC FORM VALIDATION");
-      event.target.submit();
-    }
-  });
+  }
+};
+
+$(document).ready(function() {
+  // on click of submit button, execute recaptcha and submit form if successful
+  $(".recaptcha-send-btn").click(recaptchaSubmit.submitForm.bind(recaptchaSubmit));
+
+  // recaptchaSubmit.submitForm() will submit the form if recaptcha is successful.
+  $(".AcousticForm, #preference-center, #unsubscribe").on("submit", acousticFormValidation.submitForm.bind(acousticFormValidation));
+});
 </script>
 
 <!-- ACOUSTIC CAMPAIGN PREFERENCE CENTER AND OPT OUT FORM -->
