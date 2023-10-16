@@ -90,22 +90,43 @@ window.onload = (event) => {
       $('#error-footer-email').show();
     }
   })
+
   //reCAPTCHA
-  $(document).ready(function() {
-    function recaptchaSubmit(e) {
-      e.preventDefault();
-      console.log("Recaptcha submit function");
-      const $this = $(this);
+  function recaptchaSubmit(e) {
+    e.preventDefault();
+    const $this = $(this),
+          form = $this.closest('form'),
+          recaptcha = form.find("[name='g-recaptcha-response']");
+    
+    // initiate loading animation
+    form.find(".contact-submit-arrow-2 svg:first").hide();
+    form.find(".AcousticFormLoading").css("display", "block");
+
+    // execute reCAPTCHA
+    try {
       grecaptcha.ready(function() {
-        grecaptcha.execute('6LdtEAkeAAAAAOioARNXsjsYyY2E4hCK9B0GrUCj', {action: 'submit'}).then(function(token) {
-          $this.closest('.recaptcha-check-form').submit(); 
-        });
-      })
+        grecaptcha
+          .execute('6LdtEAkeAAAAAOioARNXsjsYyY2E4hCK9B0GrUCj', {action: 'submit'})
+          .then(function(token) {
+            if(recaptcha.length) {
+              recaptcha.val(token);
+            } else {
+              form.append('<input type="hidden" name="g-recaptcha-response" value="' + token + '">');
+            }
+            $this.closest('.recaptcha-check-form').submit();
+          })
+          .catch(function(error) {
+            console.error('Error: grecaptcha failed to execute. ' + error);
+          });
+      });
+    } catch (error) {
+      console.error('Error: grecaptcha is not ready. ' + error);
     }
+  }
+  $(document).ready(function() {
     $(".recaptcha-send-btn").click(recaptchaSubmit);
   });
-</script>
-<script>
+
   // removing the required attribute from checkboxes when at least one is selected
   $(function(){
     var e = $(":checkbox[required]");
@@ -122,13 +143,24 @@ window.onload = (event) => {
   });
 
   // Acoustic form validation
-  $(".lp-form .AcousticForm, #preference-center, #unsubscribe").on("submit", function(event) {
+  $(".AcousticForm, #preference-center, #unsubscribe").on("submit", function(event) {
     event.preventDefault();
+
     console.log("STARTING ACOUSTIC FORM VALIDATION");
-    function validateEmail(contactemail) {
-      var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-      return re.test(String(contactemail).toLowerCase());
+
+    const acousticFormValidation = {
+      form: null,
+      fields: 0,
+      validFields: 0,
+
+      submitform(event) {
+        event.preventDefault();
+        console.log("STARTING ACOUSTIC FORM VALIDATION");
+        this.fields = 0;
+        this.validFields = 0;
+      }
     }
+
     let form = $(this),
         fields = 0,
         validFields = 0;
@@ -138,7 +170,7 @@ window.onload = (event) => {
           name = $(this).attr("name"),
           type = $(this).attr("type"),
           ph = $(this).attr("placeholder"),
-          isValid = value != "" && validateEmail(value),
+          isValidEmail = value != "" && validateEmail(value),
           error = $("#error-" + id).children("div.text-small"),
           countchecked = form.find("input[name='" + name + "']:checked").length;
       fields++;
@@ -150,7 +182,7 @@ window.onload = (event) => {
         }
       }
       // validate email field is valid
-      if(name == "Email" && !isValid) {
+      if(name == "Email" && !isValidEmail) {
         $(this).addClass("error").removeClass("success");
         $("#error-" + id).show();
       }
@@ -179,8 +211,6 @@ window.onload = (event) => {
     });
     // you can only submit the form if the number of required fields is equal to the number of required valid fields
     if(fields == validFields) {
-      form.find(".contact-submit-arrow-2 svg:first").hide();
-      form.find(".AcousticFormLoading").css("display", "block");
       console.log("ENDING ACOUSTIC FORM VALIDATION");
       event.target.submit();
     }
