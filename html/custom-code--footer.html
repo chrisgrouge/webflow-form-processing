@@ -109,14 +109,31 @@ $(function(){
 });
 
 function acousticFormLoadingState(isLoading, form) {
- if (isLoading) {
-   form.find(".contact-submit-arrow-2 svg:first").hide();
-   form.find(".AcousticFormLoading").css("display", "block");
- }
- else {
-   form.find(".contact-submit-arrow-2 svg:first").show();
-   form.find(".AcousticFormLoading").css("display", "none");
- }  
+  const recaptchaSendBtn = form.find(".recaptcha-send-btn");
+  const RECAPTCHA_SEND_BTN_CLICK_BLOCKER_SELECTOR = "recaptchaSendBtnClickBlocker";
+  const recaptchaSendBtnClickBlocker = $(`#${RECAPTCHA_SEND_BTN_CLICK_BLOCKER_SELECTOR}`);
+  const buttonSubmitArrow = form.find(".contact-submit-arrow-2 svg:first");
+  const acousticFormLoadingSpinner = form.find(".AcousticFormLoading");
+  
+  if (isLoading) {
+    // Prevent the button from being clicked while the loading animation is running.
+      // Only doing this becuase something is preventing a disabled prop from being added to the submit button.
+      // So, instead of trying to find that code, I cover the button to make it not clickable.
+    if (!recaptchaSendBtnClickBlocker.length) {
+      recaptchaSendBtn.after(`<div id="${RECAPTCHA_SEND_BTN_CLICK_BLOCKER_SELECTOR}" style="position: absolute; width: 100%; top: 0; height: 55px; z-index: 9999999;"></div>`);
+    }
+    // hide the submit arrow
+    buttonSubmitArrow.hide();
+    // show the loading spinner
+    acousticFormLoadingSpinner.css("display", "block");
+  }
+  else {
+    if (recaptchaSendBtnClickBlocker.length) {
+      recaptchaSendBtnClickBlocker.remove();
+    }
+    buttonSubmitArrow.show();
+    acousticFormLoadingSpinner.css("display", "none");
+  }  
 }
 
 // Acoustic form validation
@@ -188,6 +205,13 @@ const acousticFormValidation = {
     });
 
     // console.log("Total required inputs: " + fields, "  |  Total valid inputs: " + validFields);
+
+    // append a hidden input to the form with the full page url as the value.
+    // this is only used for logging purposes.
+    let formSubmittedFromUrlInput = form.find("input[name='formSubmittedFromUrl']");
+    formSubmittedFromUrlInput.length
+      ? formSubmittedFromUrlInput.val(window.location.href)
+      : form.append("<input type='hidden' name='formSubmittedFromUrl' value='" + window.location.href + "'>");
     
     // if all required inputs are valid, submit the form
     if(fields === validFields) {
@@ -236,7 +260,7 @@ const recaptchaSubmit = {
     button = $(event.target);
     form = button.closest('form');
     recaptcha = form.find("[name='g-recaptcha-response']");
-    
+
     // initiate loading animation
     acousticFormLoadingState(true, form);
 
