@@ -5,47 +5,143 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Node js Google Recaptcha v3 &amp; Honey Pot Example Testing</title>
+  <style>
+    .error-text {
+      display: none;
+      color: red;
+    }
+  </style>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 </head>
 <body>
-  <form method="post" class="AcousticForm form flex-column flex-align-start recaptcha-check-form" id="22-Optimizely-Upgrade" name="22-Optimizely-Upgrade" data-name="22-Optimizely-Upgrade" aria-label="22-Optimizely-Upgrade" action="https://ev20ry8zej.execute-api.us-east-1.amazonaws.com/default/dev" pageId="18553420" siteId="803732" parentPageId="18553418">
-
-    <div><style type="text/css">#dpW0wHp { opacity: 0; position: absolute; top: 0; left: 0; height: 0; width: 0; z-index: -1; }</style>
-    <input type="text" id="dpW0wHp" name="CustId" data-name="CustId" placeholder="CUSTOMER ID" class="contact-text-f1eld w-1nput" tabindex="-1" autocomplete="off"></div>
-    
-    <div class="width-full margin-bottom-16">
-      <input type="text" id="jlrerwf" name="Email" data-name="Email" placeholder="BUSINESS EMAIL*" class="contact-text-field w-input" required="">
-      <div id="error-jlrerwf" class="error-text">
-        <div class="text-small">Please enter a valid Email Address</div>
-      </div>
-    </div>
-    
-    <div class="width-full margin-bottom-16">
-      <input type="text" id="h76qa21" name="First Name" data-name="First Name" placeholder="First Name*" class="contact-text-field w-input" maxlength="256" required="required">
-      <div id="error-h76qa21" class="error-text">
-        <div class="text-small">Please enter your First Name</div>
-      </div>
-    </div>
   
-    <div class="width-full margin-bottom-16">
-      <div class="additional-form-area feedback-field">
-        <textarea name="Comments from Contact" data-name="Comments from Contact" id="nggz4yt" placeholder="Do you have any feedback for us?" class="contact-text-field w-input" maxlength="4000" style="background-color: rgb(235, 237, 238);"></textarea>
-        <div id="error-nggz4yt" class="error-text">
-          <div class="text-small"></div>
-        </div>
-      </div>
+<form method="post" class="AcousticForm form flex-column flex-align-start recaptcha-check-form" id="test-webforms" name="test-webforms" data-name="test-webforms" aria-label="test-webforms" action="https://ev20ry8zej.execute-api.us-east-1.amazonaws.com/default/prod" pageId="18989913" siteId="815011" parentPageId="18989911">
+
+  <div><style type="text/css">#dpW0wHp { opacity: 0; position: absolute; top: 0; left: 0; height: 0; width: 0; z-index: -1; }</style>
+  <input type="text" id="dpW0wHp" name="CustId" data-name="CustId" placeholder="CUSTOMER ID" class="contact-text-f1eld w-1nput" tabindex="-1" autocomplete="off"></div>
+    
+<div class="width-full margin-bottom-16">
+	<input type="text" id="7qwz4ez" name="Email" data-name="Email" placeholder="EMAIL ADDRESS*" class="contact-text-field w-input" required="">
+	<div id="error-7qwz4ez" class="error-text">
+		<div class="text-small">Please enter a valid Email Address</div>
+	</div>
+<div data-lastpass-icon-root="true" style="position: relative !important; height: 0px !important; width: 0px !important; float: left !important;"></div></div>
+
+<div class="width-full margin-bottom-16">
+	<input type="text" id="51oswrk" name="First Name" data-name="First Name" placeholder="First Name*" class="contact-text-field w-input" maxlength="256" required="required">
+	<div id="error-51oswrk" class="error-text">
+		<div class="text-small">Error message First Name</div>
+	</div>
+</div>
+
+<div class="width-full margin-bottom-16">
+	<input type="tel" id="aviukka" name="Work Phone" data-name="Work Phone" placeholder="Work Phone*" class="contact-text-field w-input" maxlength="256" required="required">
+	<div id="error-aviukka" class="error-text">
+		<div class="text-small">Error message Work Phone</div>
+	</div>
+</div>
+
+<div class="width-full margin-bottom-16">
+<fieldset id="tvsqgxgdf" for="tvsqgxg">
+<legend>Contact Role*</legend>
+	<input type="checkbox" id="pz5y6m4" name="Contact Role" data-name="Contact Role" value="Billing contact" required="required">
+	<label for="pz5y6m4">Billing contact</label>
+	<br>
+	<input type="checkbox" id="ohorqn6" name="Contact Role" data-name="Contact Role" value="Decision maker" required="required">
+	<label for="ohorqn6">Decision maker</label>
+  <br>
+  <input type="checkbox" id="pz5y6dm4" name="Contact Role" data-name="Contact Role" value="test" required="required">
+	<label for="pz5y6dm4">test</label>
+	<br>
+  <input type="checkbox" id="pz5y6m444" name="Contact Role" data-name="Contact Role" value="chris" required="required">
+	<label for="pz5y6m444">chris</label>
+	<br>
+</fieldset>
+	<div id="error-tvsqgxgdf" class="error-text">
+		<div class="text-small">Error message Contact Role</div>
+	</div>
+</div>
+
+<div class="width-full margin-bottom-16">
+  <fieldset id="tvsqgxg" for="tvsqgxg">
+  <legend>Contact Role New*</legend>
+    <input type="checkbox" id="pz5ya6m4" name="Contact Role New" data-name="Contact Role New" value="Billing contact" required="required">
+    <label for="pz5ya6m4">Billing contact</label>
+    <br>
+    <input type="checkbox" id="ohorqndf6" name="Contact Role New" data-name="Contact Role New" value="Decision maker" required="required">
+    <label for="ohorqndf6">Decision maker</label>
+    <br>
+    <input type="checkbox" id="pz5y6dmdf4" name="Contact Role New" data-name="Contact Role New" value="test" required="required">
+    <label for="pz5y6dmdf4">test</label>
+    <br>
+    <input type="checkbox" id="asdpz5y6m444" name="Contact Role New" data-name="Contact Role New" value="chris" required="required">
+    <label for="asdpz5y6m444">chris</label>
+    <br>
+  </fieldset>
+    <div id="error-tvsqgxg" class="error-text">
+      <div class="text-small">Error message Contact Role New</div>
     </div>
-    
-    <div class="policy-text top-20">By submitting this form, you agree to receive our future communications. Visit our <a href="/lp/email-preferences" class="policy-link-2">Preference Center</a> to make changes and our <a href="/privacy-policy" class="policy-link-2">Privacy Policy</a> to learn how we use your data.</div> <div class="margin-left-auto"><div class="contact-submit-wrap"><button class="g-recaptcha contact-submit-button-2 margin-bottom-0 w-button recaptcha-send-btn" id="submit-1024" data-sitekey="6LdtEAkeAAAAAOioARNXsjsYyY2E4hCK9B0GrUCj" data-callback="recaptchaSubmit" data-action="submit">talk to us</button><div class="contact-submit-arrow-2 w-embed" style="transform: translate3d(0px, 0px, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(-45deg) skew(0deg, 0deg); transform-style: preserve-3d;"><svg width="19" height="16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="m11.096 0-1.069 1.105 6.064 6.189L0 7.265.062 8.82l16.029.029-5.91 6.058L11.261 16 19 8.071 11.096 0Z" fill="currentColor"></path></svg><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="AcousticFormLoading" style="margin: auto; background: rgba(0, 0, 0, 0) none repeat scroll 0% 0%; display: none; shape-rendering: auto;" width="24px" height="24px" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid"><circle cx="50" cy="50" fill="none" stroke="#dc137d" stroke-width="8" r="38" stroke-dasharray="179.0707812546182 61.690260418206066"><animateTransform attributeName="transform" type="rotate" repeatCount="indefinite" dur="1s" values="0 50 50;360 50 50" keyTimes="0;1"></animateTransform></circle></svg></div></div></div>
-    
-    <input type="hidden" name="Advertisement Type" value="22-Opt-Net-5" data-name="Advertisement Type">
-    
-    
-    <input type="hidden" name="Lead captured via" value="Website" data-name="Lead captured via">
-    
-    
-        <!-- DO NOT REMOVE HIDDEN FIELD sp_exp -->
-          <input type="hidden" name="sp_exp" value="yes">
-          <input type="hidden" name="submittingURL" value="https://www.pages05.net/whereoware/test-webflow-cg/test-webform/">
-        </form>
+  </div>
+
+<div class="width-full margin-bottom-16">
+<fieldset id="uxhbd7x" for="uxhbd7x">
+	<legend>Inactive*</legend>
+	<input type="radio" id="5dyfz6q" name="Inactive" data-name="Inactive" value="Yes" required="required">
+	<label for="5dyfz6q">Yes</label>
+	<br>
+	<input type="radio" id="8o9ge5n" name="Inactive" data-name="Inactive" value="No" required="required">
+	<label for="8o9ge5n">No</label>
+</fieldset>
+	<div id="error-uxhbd7x" class="error-text">
+		<div class="text-small">Error message Inactive</div>
+	</div>
+</div>
+
+<div class="width-full margin-bottom-16">
+  <fieldset id="uxhbd7xdf" for="uxhbd7x">
+    <legend>Inactive New*</legend>
+    <input type="radio" id="5dyfz6dfq" name="Inactive New" data-name="Inactive New" value="Yes" required="required">
+    <label for="5dyfz6dfq">Yes</label>
+    <br>
+    <input type="radio" id="8o9ge5nfd" name="Inactive New" data-name="Inactive New" value="No" required="required">
+    <label for="8o9ge5nfd">No</label>
+  </fieldset>
+    <div id="error-uxhbd7xdf" class="error-text">
+      <div class="text-small">Error message Inactive New</div>
+    </div>
+  </div>
+
+<div class="width-full margin-bottom-16">
+<select id="4fbrane" name="Industry" data-name="Industry" required="required">
+	<option value="" disabled="" selected="">Industry*</option>
+	<option value="Furniture">Furniture</option>
+	<option value="Lighting">Lighting</option>
+</select>
+	<div id="error-4fbrane" class="error-text">
+		<div class="text-small">Error message Industry</div>
+	</div>
+</div>
+
+<div class="width-full margin-bottom-16">
+	<div class="additional-form-area-2">
+		<textarea name="Contact Us Submission" data-name="Contact Us Submission" id="qv5znoo" placeholder="Contact Us Submission" class="contact-text-field w-input" maxlength="4000"></textarea>
+		<div id="error-qv5znoo" class="error-text">
+			<div class="text-small">Error message Contact Us Submission</div>
+		</div>
+	</div>
+</div>
+
+<div class="policy-text top-20">By submitting this form, you agree to receive our future communications. Visit our <a href="/lp/email-preferences" class="policy-link-2">Preference Center</a> to make changes and our <a href="/privacy-policy" class="policy-link-2">Privacy Policy</a> to learn how we use your data.</div> <div class="margin-left-auto"><div class="contact-submit-wrap"><button class="contact-submit-button-2 margin-bottom-0 w-button recaptcha-send-btn">talk to us</button><div class="contact-submit-arrow-2 w-embed" style="transform: translate3d(0px, 0px, 0px) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg) rotateZ(-45deg) skew(0deg, 0deg); transform-style: preserve-3d;"><svg width="19" height="16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="m11.096 0-1.069 1.105 6.064 6.189L0 7.265.062 8.82l16.029.029-5.91 6.058L11.261 16 19 8.071 11.096 0Z" fill="currentColor"></path></svg><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="AcousticFormLoading" style="margin: auto; background: rgba(0, 0, 0, 0) none repeat scroll 0% 0%; display: none; shape-rendering: auto;" width="24px" height="24px" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid"><circle cx="50" cy="50" fill="none" stroke="#dc137d" stroke-width="8" r="38" stroke-dasharray="179.0707812546182 61.690260418206066"><animateTransform attributeName="transform" type="rotate" repeatCount="indefinite" dur="1s" values="0 50 50;360 50 50" keyTimes="0;1"></animateTransform></circle></svg></div></div></div>
+
+<input type="hidden" name="Lead captured via" value="Contact Us" data-name="Lead captured via">
+
+
+<!-- DO NOT REMOVE HIDDEN FIELD sp_exp -->
+<input type="hidden" name="sp_exp" value="yes">
+<input type="hidden" name="submittingURL" value="https://www.pages05.net/whereoware/22-test-webforms/22-test-webforms">
+</form>
+      
+
+  <script src="formhandler.js" type="text/javascript"></script>
 </body>
 </html>
