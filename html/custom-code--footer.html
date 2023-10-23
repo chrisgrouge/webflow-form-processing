@@ -101,12 +101,15 @@ const formSubmitHandler = {
   recaptcha: null,
   acousticFormLoadingState() {
     const isLoading = formSubmitHandler.isFormSubmitted;
-    const buttonSubmitArrow = formSubmitHandler.form.find(".contact-submit-arrow-2 svg:first");
+    const isFooterForm = formSubmitHandler.form.attr("id") == "footer-form";
+    let buttonSubmitArrow = isFooterForm
+      ? formSubmitHandler.form.find(".footer_submit-arrow")
+      : formSubmitHandler.form.find(".contact-submit-arrow-2 svg:first");
     const acousticFormLoadingSpinner = formSubmitHandler.form.find(".AcousticFormLoading");
     
     if (isLoading) {
       buttonSubmitArrow.hide();
-      acousticFormLoadingSpinner.css("display", "block");
+      isFooterForm ? acousticFormLoadingSpinner.css("display", "inline") : acousticFormLoadingSpinner.css("display", "block");
     }
     else {
       buttonSubmitArrow.show();
