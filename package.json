@@ -1,12 +1,12 @@
 {
   "name": "webflow-form-processing-lambda",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "npx nodemon index"
   },
-  "author": "Chris Grouge, Lead Digital Marketer, Whereoware",
+  "author": "Chris Grouge, Frontend Developer, Whereoware",
   "license": "ISC",
   "dependencies": {
     "axios": "^0.27.2",

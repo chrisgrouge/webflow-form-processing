@@ -2,200 +2,176 @@
 
 const axios = require('axios');
 const qs = require('qs');
-const config = require('config');
 
-exports.handler = async (event, context, callback) => {
+const CAPTCHA_SECRET = process.env.CAPTCHA_SECRET;
+const HONEY_POT_FIELD_NAME = 'CustId';
+const GRECAPTCHA_RESPONSE_FIELD_NAME = 'g-recaptcha-response';
+const FORM_FIELDS_TO_EXCLUDE_FROM_SUBMISSION = [
+  'action',
+  'formSubmittedFromUrl',
+  'submittingURL',
+  GRECAPTCHA_RESPONSE_FIELD_NAME,
+  HONEY_POT_FIELD_NAME
+];
+const CAPTCHA_PASSING_SCORE = 0.7;
+const CAPTCHA_URL = 'https://www.google.com/recaptcha/api/siteverify';
+const ERROR_URL = "https://www.whereoware.com/error";
 
-  const formData = qs.parse(event.body);
-  const formDataForQuery = formData;
-  // we redefine this variable later with the final submitting url to Acoustic. For now, we just need the site url.
-  let submittingURL = formData.submittingURL + "?";
-  
-  
-  const gRecaptchaResponse = formData['g-recaptcha-response'];
-  const hp = formData['CustId'];
-  // prod secret
-  const CAPTCHA_SECRET = process.env.CAPTCHA_SECRET;
-  // testing secret using config
-  // const CAPTCHA_SECRET = config.get('TEST_CAPTCHA_SECRET');
-  // testing secret using aws environment variable
-  // const CAPTCHA_SECRET = process.env.TEST_CAPTCHA_SECRET;
-  const CAPTCHA_URL = `https://www.google.com/recaptcha/api/siteverify?secret=${CAPTCHA_SECRET}&response=${gRecaptchaResponse}`;
-  // defaulting to 404 page. This will be updated if needed.
-  let redirectURL = "https://www.whereoware.com/404";
-  const ERROR_URL = "https://www.whereoware.com/error";
-
-  console.log("----- FORM SUBMISSION");
-  console.log(formData);
-  
-  
-/******************************************************************************** 
- * 
- * STEP 1: CHECK THAT HONEY POT WASN'T FILLED IN
- * 
-*********************************************************************************/
-  
-  const honeypot = () => {
-    if (hp != '') {
-      let errorMsg = "----- Honey Pot submission was found. Likely Spam. Do not allow."
-      throw new Error(errorMsg);
-    } else {
-      let passMsg = "----- PASSED STEP 1. No honey pot."
-      console.log(passMsg)
-      return new Promise(resolve => {
-        resolve(passMsg)
-      })
+/**
+ * Object containing methods for processing form submissions.
+ * @namespace webflowFormProcessingForAcoustic
+ */
+const webflowFormProcessingForAcoustic = {
+  /**
+   * Ensure the honey pot field wasn't filled in
+   * @param {string} value - The value of the honey pot field
+   * @throws Will throw an error if the honey pot field was filled in
+   * @returns {void}
+   */
+  _checkHoneyPotValue: function(value) {
+    if (value !== '') {
+      throw new Error('----- Honey Pot submission was found. Likely Spam. Do not allow.');
     }
-  }
-
-/******************************************************************************** 
- * 
- * STEP 2: CHECK THAT G-RECAPTCHA RESPONSE VALUE WAS PROVIDED
- * 
-*********************************************************************************/
-  
-  const confirmGoogleRecaptchaResponse = () => {
-    if (gRecaptchaResponse === undefined || gRecaptchaResponse === '' || gRecaptchaResponse === null) {
-      let errorMsg = "----- Google Recaptcha Response NOT included in the submission. Do not allow."
-      console.log(errorMsg);
-      redirectURL = ERROR_URL;
-      console.log("Will redirect to: ", redirectURL);
-      throw new Error(errorMsg);
-    } else {
-      let passMsg = "----- PASSED STEP 2. Google Recaptcha Response found."
-      console.log(passMsg)
-      return new Promise(resolve => {
-        resolve(passMsg)
-      })
+    
+    console.log('----- PASSED STEP 1. No honey pot.');
+    return;
+  },
+  /**
+   * Score the Google Recaptcha response to determine if it can pass. If the score is too low, an error will be thrown.
+   * @param {string} responseValue - The value of the GRECAPTCHA_RESPONSE_FIELD_NAME field
+   * @throws Will throw an error if the Google Recaptcha score is too low
+   * @returns {void}
+   */
+  _scoreRecaptcha: async function(responseValue) {
+    if (!responseValue) {
+      throw new Error(`----- Google Recaptcha Response NOT included in the submission. Do not allow. Will redirect to: ${ERROR_URL}`);
     }
-  }
 
-
-/******************************************************************************** 
- * 
- * STEP 3: SCORE THE GOOGLE RECAPTCHA RESPONSE TO DETERMINE IF IT CAN PASS
- * 
-*********************************************************************************/
-  
-  const scoreRecaptcha = async () => {
     try {
-      const res = await axios.post(CAPTCHA_URL, {
-        method: 'post',
-        data: {
-          secret: CAPTCHA_SECRET,
-          response: gRecaptchaResponse
+      const res = await axios.post(CAPTCHA_URL, qs.stringify({
+        secret: CAPTCHA_SECRET,
+        response: responseValue
+      }), {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
         }
       });
-      console.log("----- Begin recaptcha scoring")
-      console.log(res.data);
-      // ! here is where I'm deciding when to submit to Acoustic. Right now submissions go to Acoustic if score is greater than or equal to 0.7
-      if(res.data.success === true && res.data.score >= 0.7) {
-        
-        // ! when testing uncomment this section and comment out the submitToAcoustic function. The below will return the submission details in the browser for you to review
-        console.log("----- PASSESD STEP 3. Recaptcha response was submitted successfully and score at or above 0.7");
-        return {
-          statusCode: res.status,
-          body: res
-        }
+
+      // If the request was not successful or the score is null or undefined, throw an error
+      if (!res?.data?.success || res?.data?.score == null) {
+        throw new Error('----- Google Recaptcha API request was not successful.');
       }
-      else {
-        redirectURL = ERROR_URL;
-        console.log("Will redirect to: ", redirectURL);
-        throw new Error("Scoring the recaptcha response failed. It either returned false or the score was below 0.7.");
+
+      const score = res.data.score;
+      if (score < CAPTCHA_PASSING_SCORE) {
+        throw new Error(`----- Google Recaptcha score is too low. Score: ${score}`);
       }
+  
+      console.log(`----- PASSED STEP 2. Google Recaptcha score is acceptable. Score: ${score}`);
     }
-    catch(error) {
-      console.log("----- scoreRecaptcha axios ERROR: ");
+    catch (error) {
       throw error;
     }
-  }
-
-
-/******************************************************************************** 
- * 
- * STEP 4: BUILD THE SUBMITTING URL
- * 
-*********************************************************************************/
-
-  const buildSubmittingURL = () => {
-    delete formDataForQuery.action;
-    delete formDataForQuery.submittingURL;
-    delete formDataForQuery['g-recaptcha-response'];
-    submittingURL = submittingURL + Object.keys(formDataForQuery).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(formDataForQuery[key])).join('&');
-    
-    let passMsg = "----- PASSED STEP 4. Submitting Url has been built. " + submittingURL
-    console.log(passMsg)
-    return new Promise(resolve => {
-      resolve(passMsg)
-    })
-  }
-
-/******************************************************************************** 
- * 
- * STEP 5: SUBMIT TO ACOUSTIC
- * 
-*********************************************************************************/
+  },
+  /**
+   * Build the submitting URL with the form data appended as a query string and return the URL
+   * @param {Object} formData - The form data to be submitted
+   * @returns {string} The submitting URL with the form data appended as a query string
+   */
+  _buildSubmittingURL: function(formData) {
+    // Remove the fields that should not be included in the submission
+    const data = Object.fromEntries(
+      Object.entries(formData)
+        .filter(([key]) => !FORM_FIELDS_TO_EXCLUDE_FROM_SUBMISSION.includes(key))
+    );
   
-  const submitToAcoustic = async () => {
-    await axios.post(submittingURL)
-      .then((res) => {
-        // console.log(res.data);
-        console.log("----- Submission to Acoustic successful. Compiling redirect url for final redirect.")
-        // this value is navigating down the JSON tree of data Acoustic provides in the response to get the url you redirect to after a successful submission. We can redirect the page here
-        redirectURL = res.request._redirectable._currentUrl;
-        console.log("Will redirect to: ", redirectURL);
-      }).catch((error) => {
-        console.error(error);
-      });
+    // Stringify the form data
+    const queryString = qs.stringify(data);
+
+    // Build the submitting URL
+    const submittingUrl = `${formData.submittingURL}?${queryString}`;
+
+    console.log(`----- PASSED STEP 3. Submitting Url has been built: ${submittingUrl}`);
+    return submittingUrl;
+  },
+  /**
+   * Submit the form data to Acoustic and get the redirect URL
+   * @param {string} submittingUrl - The URL to submit the form data to
+   * @returns {string} The redirect URL returned from Acoustic
+   */
+  _submitToAcoustic: async function(submittingUrl) {
+    try {
+      // Submit the form data to Acoustic
+      const res = await axios.post(submittingUrl);
+
+      // If the request was not successful or the redirect URL is null, undefined, or empty, throw an error
+      if (!res?.request?._redirectable || !res?.request?._redirectable?._currentUrl) {
+        throw new Error('----- Submission to Acoustic was not successful or did not return a redirect URL.');
+      }
+
+      // Get the redirect URL from the response and return it
+      const redirectURL = res.request._redirectable._currentUrl;
+      console.log(`----- PASSED STEP 4. Submitted to Acoustic. Redirecting to: ${redirectURL}`);
+      return redirectURL;
+    } catch (error) {
+      throw error;
+    }
+  },
+  /**
+   * Main method for processing form submissions
+   * @param {Object} formData - The form data to be submitted
+   * @returns {string} The redirect URL returned from Acoustic
+   */
+  main: async function(formData) {
+    console.log("----- FORM SUBMISSION", formData);
+
+    let redirectURL = '';
+    const honeyPotFieldValue = formData[HONEY_POT_FIELD_NAME];
+    const gRecaptchaResponse = formData[GRECAPTCHA_RESPONSE_FIELD_NAME];
+
+    try {
+      // Ensure the honey pot field wasn't filled in
+      this._checkHoneyPotValue(honeyPotFieldValue);
+  
+      // Ensure the GRECAPTCHA_RESPONSE_FIELD_NAME value was provided
+      this._confirmGoogleRecaptchaResponse(gRecaptchaResponse);
+  
+      // Score the Google Recaptcha response to determine if it can pass
+      await this._scoreRecaptcha(gRecaptchaResponse);
+      
+      // Build the submitting URL
+      const submittingUrl = this._buildSubmittingURL(formData);
+
+      // Submit the form data to Acoustic and get the redirect URL
+      redirectURL = await this._submitToAcoustic(submittingUrl);
+    }
+    catch (error) {
+      redirectURL = ERROR_URL;
+      throw error;
+    }
+
+    return redirectURL;
   }
+}
 
- 
+exports.handler = async (event, context, callback) => {
+  const formData = qs.parse(event.body);
 
-  async function main() {
-    console.log("----- Begin Main");
-    // step 1
-    await honeypot();
-    // step 2
-    await confirmGoogleRecaptchaResponse();
-    // step 3
-    await scoreRecaptcha();
-    //step 4
-    await buildSubmittingURL();
-    // step 5
-    await submitToAcoustic();
-    console.log("----- Main complete")
-  }
-
+  // defaulting to the error page.
+  let redirectURL = ERROR_URL;
 
   try {
-    await main();
-    // this will return the form data on screen for testing
-    // return {
-    //   statusCode: 200,
-    //   headers: {
-    //     'Content-Type': 'application/json'
-    //   },
-    //   body: JSON.stringify(formData),
-    // };
-
-    return {
-      statusCode: 301,
-      headers: {
-          Location: redirectURL
-      }
-    }
+    redirectURL = await webflowFormProcessingForAcoustic.main(formData);
   }
   catch (error) {
-    console.log('Error ', error);
-    // return {
-    //   statusCode: 400,
-    //   body: error.message,
-    // };
-    return {
-      statusCode: 301,
-      headers: {
-          Location: redirectURL
-      }
+    console.error('Error occurred during form processing: ', formData);
+    console.error(error);
+  }
+
+  return {
+    statusCode: 301,
+    headers: {
+        Location: redirectURL
     }
-  }    
+  }
 };
