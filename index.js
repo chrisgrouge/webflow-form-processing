@@ -133,9 +133,6 @@ const webflowFormProcessingForAcoustic = {
       // Ensure the honey pot field wasn't filled in
       this._checkHoneyPotValue(honeyPotFieldValue);
   
-      // Ensure the GRECAPTCHA_RESPONSE_FIELD_NAME value was provided
-      this._confirmGoogleRecaptchaResponse(gRecaptchaResponse);
-  
       // Score the Google Recaptcha response to determine if it can pass
       await this._scoreRecaptcha(gRecaptchaResponse);
       
